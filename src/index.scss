@@ -36,8 +36,6 @@ body {
   }
 }
 
-
-
 .field {
   background: #ffffff;
   border: 1px solid #efefef;
@@ -45,6 +43,7 @@ body {
   border-radius: 4px;
   padding: 8px 12px;
   width: 100%;
+  font-size: 14px;
   &:focus {
     border-color: #d4d2d2;
   }
@@ -57,12 +56,29 @@ body {
   border: 0;
   padding: 10px 30px;
   cursor: pointer;
+  font-size: 14px;
   &:hover {
     background-color: darken(#4dd599, 6%);
     transition: 0.4s ease;
   }
-  &:active{
+  &:active {
     background-color: darken(#4dd599, 10%);
     transition: 0.4s ease;
+  }
+  &:disabled{
+    background: #d8d8d8;
+  }
+  &--gray {
+    background: #f4f6f8;
+    color: #444444;
+
+    &:hover{
+      transition: all 0.15s ease-in-out;
+      background: darken($color: #f4f6f8, $amount: 3%);
+    }
+    &:active{
+      transition: all 0.15s ease-in-out;
+      background: darken($color: #f4f6f8, $amount: 6%);
+    }
   }
 }

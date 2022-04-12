@@ -49,8 +49,9 @@ const AddList = ({ colors, onAdd }) => {
             const  listObj = {...data, color: {name: color} };
             onAdd(listObj);
             onClose();
-        })
-        .finally(() => {
+        }).catch(() =>{
+            alert('Ошибка при добвалении списка!');      
+          }).finally(() => {
             setIsLoading(false);
         });
 

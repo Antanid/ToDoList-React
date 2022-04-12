@@ -10,6 +10,7 @@ function App() {
 
   const [lists, setLists] = useState(null);
   const [colors, setColors] = useState(null);
+  const [activeItem, setActiveItem] = useState(null);
 
   useEffect(() => {
     axios.get('http://localhost:3002/lists?_expand=color&_embed=tasks').then(({ data }) => {
@@ -28,17 +29,39 @@ function App() {
     setLists(newLists);
   };
 
+  const onAddTask = (listId, taskObj) => {
+    const newLists = lists.map(item => {
+      if(item.id === listId){
+        item.tasks = [...item.tasks, taskObj];
+      }
+      return item;
+    });
+    setLists(newLists);
+  };
+
+  const onEditListItem = (id, title) => {
+const newLists = lists.map(item => {
+  if(item.id === id) {
+    item.name = title;
+  }
+  return item;
+});
+setLists(newLists);
+  }
+
   return (
     <div className="todo">
 
       <div className='todo__sidebar'>
         <List items={[
           {
+            active: true,
             icon: <img src={listSvg} alt='list-icon' />,
             name: 'Все задачи',
           }
         ]}
         />
+        
         {lists ? (
           <List
             items={lists}
@@ -46,6 +69,10 @@ function App() {
               const newLists = lists.filter(item => item.id !== id);
               setLists(newLists);
             }}
+            onClickItem={ item => {
+              setActiveItem(item);
+            }}
+            activeItem={activeItem}
             isRemovable
           />
         ) : (
@@ -56,7 +83,7 @@ function App() {
 
       <div className='todo__tasks'>
         {
-          lists && <Tasks list={lists[1]}/>
+          lists && activeItem && <Tasks onAddTask={onAddTask} list={activeItem} onEditTitle={onEditListItem}/>
         } 
       </div>
 
