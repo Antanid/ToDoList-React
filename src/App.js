@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import listSvg from './assets/img/list.svg';
 import axios from 'axios';
+import { Route, Link, Routes } from "react-router-dom";
+
 
 import { List, AddList, Tasks } from './components';
 
@@ -31,7 +33,7 @@ function App() {
 
   const onAddTask = (listId, taskObj) => {
     const newLists = lists.map(item => {
-      if(item.id === listId){
+      if (item.id === listId) {
         item.tasks = [...item.tasks, taskObj];
       }
       return item;
@@ -40,13 +42,28 @@ function App() {
   };
 
   const onEditListItem = (id, title) => {
-const newLists = lists.map(item => {
-  if(item.id === id) {
-    item.name = title;
+    const newLists = lists.map(item => {
+      if (item.id === id) {
+        item.name = title;
+      }
+      return item;
+    });
+    setLists(newLists);
   }
-  return item;
-});
-setLists(newLists);
+
+  const onRemoveTask = (listId, taskId) => {
+    if (window.confirm('Вы дейсвительно хотите удалить задачу?')) {
+      const newLists = lists.map((item) => {
+        if( item.id === listId){
+          item.tasks = item.tasks.filter(task => task.id !==task.id);
+        }
+        return item;
+      });
+      setLists(newLists);
+      axios.delete('http://localhost:3002/tasks/' + taskId).catch(() => {
+        alert('Не удалось удалить задачу');
+      });
+    }
   }
 
   return (
@@ -61,7 +78,7 @@ setLists(newLists);
           }
         ]}
         />
-        
+
         {lists ? (
           <List
             items={lists}
@@ -69,7 +86,7 @@ setLists(newLists);
               const newLists = lists.filter(item => item.id !== id);
               setLists(newLists);
             }}
-            onClickItem={ item => {
+            onClickItem={item => {
               setActiveItem(item);
             }}
             activeItem={activeItem}
@@ -83,8 +100,11 @@ setLists(newLists);
 
       <div className='todo__tasks'>
         {
-          lists && activeItem && <Tasks onAddTask={onAddTask} list={activeItem} onEditTitle={onEditListItem}/>
-        } 
+          lists && activeItem && <Tasks 
+          onRemoveTask={onRemoveTask}
+           onAddTask={onAddTask} list={activeItem} onEditTitle={onEditListItem} />
+        }
+
       </div>
 
     </div>
